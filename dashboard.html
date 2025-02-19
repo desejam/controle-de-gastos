@@ -21,12 +21,12 @@
         }
 
         body {
-            background-color: #ffffff;
-            color: #333;
+            background-color: #1F2937;
+            color: #D1D5DB;
         }
 
         .card {
-            background-color: #f8f9fa;
+            background-color: #374151; /* Cor mais escura para os cards */
             border-radius: 8px;
             padding: 15px;
             text-align: center;
@@ -34,15 +34,144 @@
             min-width: 200px;
         }
 
+        .bg-primary {
+            background-color: #374151; /* Cor mais escura para o cabeçalho */
+        }
+
+        .bg-card {
+            background-color: #374151; /* Cor mais escura para os modais */
+        }
+
+        .bg-modal {
+            background-color: rgba(31, 41, 55, 0.9); /* Fundo escuro para o modal */
+        }
+
+        .text-primary {
+            color: #D1D5DB; /* Texto claro */
+        }
+
+        .text-button {
+            color: #F87171; /* Cor do texto dos botões */
+        }
+
+        .hover:bg-button:hover {
+            background-color: #EF4444; /* Cor de hover dos botões */
+        }
+
+        /* Estilos para a tabela de produtos */
         .table-container {
             overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #374151; /* Fundo escuro igual aos cards */
+            color: #D1D5DB; /* Texto claro */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table thead {
+            background-color: #374151; /* Cor escura para o cabeçalho da tabela */
+        }
+
+        table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #FFFFFF; /* Texto branco */
+        }
+
+        table td {
+            padding: 12px 16px;
+            border-top: 1px solid #4B5563; /* Linha divisória entre as linhas */
+        }
+
+        table tbody tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        table tbody tr:hover {
+            background-color: #4B5563; /* Efeito hover nas linhas */
+        }
+
+        /* Estilo para os botões de ação */
+        table tbody tr td:last-child {
+            display: flex;
+            gap: 8px;
+        }
+
+        table tbody tr td:last-child button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+
+        table tbody tr td:last-child button:hover {
+            transform: translateY(-1px);
+        }
+
+        table tbody tr td:last-child button:active {
+            transform: translateY(0);
+        }
+
+        /* Estilo para o botão de Editar */
+        table tbody tr td:last-child button:first-child {
+            background-color: #4B5563; /* Cinza escuro */
+            color: #FFFFFF;
+            border: none;
+        }
+
+        table tbody tr td:last-child button:first-child:hover {
+            background-color: #6B7280; /* Cinza mais claro no hover */
+        }
+
+        /* Estilo para o botão de Excluir */
+        table tbody tr td:last-child button:last-child {
+            background-color: #EF4444; /* Vermelho */
+            color: #FFFFFF;
+            border: none;
+        }
+
+        table tbody tr td:last-child button:last-child:hover {
+            background-color: #DC2626; /* Vermelho mais escuro no hover */
+        }
+
+        /* Estilo para a mensagem de "Nenhum produto encontrado" */
+        table tbody tr td[colspan="5"] {
+            text-align: center;
+            padding: 20px;
+            color: #9CA3AF; /* Texto cinza para a mensagem */
+            font-style: italic;
+        }
+
+        input#editProductName.mt-1.p-2.w-full.border.border-gray-500.rounded-lg {
+            background-color: #374151;
+            color: white;
+        }
+
+        input#editProductValue.mt-1.p-2.w-full.border.border-gray-500.rounded-lg {
+            background-color: #374151;
+            color: white;
+        }
+
+        button, input, optgroup, select, textarea {
+            background-color: #374151;
+            color: white;
         }
     </style>
 </head>
 
-<body class="bg-white h-screen flex flex-col">
+<body class="bg-gray-800 h-screen flex flex-col">
 
-    <nav class="bg-blue-600 p-4 text-white shadow-md">
+    <nav class="bg-primary p-4 text-white shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full">
             <span id="userName" class="text-lg font-medium"></span>
@@ -53,43 +182,43 @@
     </nav>
 
     <div class="max-w-7xl mx-auto p-6 mt-6 fade-in">
-        <h2 class="text-lg font-semibold mb-4">Painel de Controle</h2>
+        <h2 class="text-lg font-semibold mb-4 text-white">Painel de Controle</h2>
 
         <!-- Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div class="card bg-green-200">
+            <div class="card">
                 <h3 class="text-md font-medium">Total Saldo</h3>
-                <p id="totalSaldo" class="mt-2 text-gray-600">R$ 0,00</p>
+                <p id="totalSaldo" class="mt-2 text-gray-400">R$ 0,00</p>
             </div>
 
-            <div class="card bg-blue-200">
+            <div class="card">
                 <h3 class="text-md font-medium">Total Parcelado</h3>
-                <p id="totalParcelado" class="mt-2 text-gray-600">R$ 0,00</p>
+                <p id="totalParcelado" class="mt-2 text-gray-400">R$ 0,00</p>
             </div>
 
-            <div class="card bg-yellow-200">
+            <div class="card">
                 <h3 class="text-md font-medium">Valor Restante</h3>
-                <p id="valorRestante" class="mt-2 text-gray-600">R$ 0,00</p>
+                <p id="valorRestante" class="mt-2 text-gray-400">R$ 0,00</p>
             </div>
 
-            <div class="card bg-red-200">
+            <div class="card">
                 <h3 class="text-md font-medium">Valor Negativo</h3>
-                <p id="valorNegativo" class="mt-2 text-red-600">R$ 0,00</p>
+                <p id="valorNegativo" class="mt-2 text-red-400">R$ 0,00</p>
             </div>
         </div>
 
         <!-- Lista de Produtos -->
         <div class="mt-6">
-            <h3 class="text-md font-semibold mb-4">Lista de Produtos</h3>
+            <h3 class="text-md font-semibold mb-4 text-white">Lista de Produtos</h3>
             <div class="table-container">
-                <table class="min-w-full bg-white border border-gray-300 text-sm">
-                    <thead class="bg-gray-200">
+                <table class="min-w-full">
+                    <thead>
                         <tr>
-                            <th class="py-2 px-4 border">Produto</th>
-                            <th class="py-2 px-4 border">Valor</th>
-                            <th class="py-2 px-4 border">Qtd Parcelas</th>
-                            <th class="py-2 px-4 border">Valor Parcela</th>
-                            <th class="py-2 px-4 border">Ações</th>
+                            <th>Produto</th>
+                            <th>Valor</th>
+                            <th>Qtd Parcelas</th>
+                            <th>Valor Parcela</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="productList"></tbody>
@@ -99,27 +228,27 @@
     </div>
 
     <!-- Modal Editar Produto -->
-    <div id="editModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-            <h3 class="text-xl font-semibold mb-4">Editar Produto</h3>
+    <div id="editModal" class="fixed inset-0 bg-modal flex justify-center items-center z-50 hidden">
+        <div class="bg-card p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 class="text-xl font-semibold mb-4 text-white">Editar Produto</h3>
             <form id="editProductForm">
                 <div class="mb-4">
-                    <label for="editProductName" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                    <input type="text" id="editProductName" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                    <label for="editProductName" class="block text-sm font-medium text-gray-300">Nome do Produto</label>
+                    <input type="text" id="editProductName" class="mt-1 p-2 w-full border border-gray-500 rounded-lg" required>
                 </div>
 
                 <div class="mb-4">
-                    <label for="editProductValue" class="block text-sm font-medium text-gray-700">Valor Total</label>
-                    <input type="number" id="editProductValue" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                    <label for="editProductValue" class="block text-sm font-medium text-gray-300">Valor Total</label>
+                    <input type="number" id="editProductValue" class="mt-1 p-2 w-full border border-gray-500 rounded-lg" required>
                 </div>
 
                 <div class="mb-4">
-                    <label for="editProductInstallments" class="block text-sm font-medium text-gray-700">Qtd Parcelas</label>
-                    <input type="number" id="editProductInstallments" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                    <label for="editProductInstallments" class="block text-sm font-medium text-gray-300">Qtd Parcelas</label>
+                    <input type="number" id="editProductInstallments" class="mt-1 p-2 w-full border border-gray-500 rounded-lg" required>
                 </div>
 
                 <div class="flex justify-end space-x-4">
-                    <button type="button" id="cancelEditButton" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                    <button type="button" id="cancelEditButton" class="px-4 py-2 bg-gray-600 rounded-md hover:bg-gray-500 text-white">Cancelar</button>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Salvar Alterações</button>
                 </div>
             </form>
@@ -127,12 +256,12 @@
     </div>
 
     <!-- Modal Excluir Produto -->
-    <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-            <h3 class="text-xl font-semibold mb-4">Confirmar Exclusão</h3>
-            <p>Você tem certeza que deseja excluir este produto?</p>
+    <div id="deleteModal" class="fixed inset-0 bg-modal flex justify-center items-center z-50 hidden">
+        <div class="bg-card p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 class="text-xl font-semibold mb-4 text-white">Confirmar Exclusão</h3>
+            <p class="text-white">Você tem certeza que deseja excluir este produto?</p>
             <div class="flex justify-end space-x-4 mt-4">
-                <button type="button" id="cancelDeleteButton" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                <button type="button" id="cancelDeleteButton" class="px-4 py-2 bg-gray-600 rounded-md hover:bg-gray-500 text-white">Cancelar</button>
                 <button id="confirmDeleteButton" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Excluir</button>
             </div>
         </div>
@@ -212,11 +341,11 @@
 
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
-                        <td class="py-2 px-4 border">${product.nome_produto}</td>
-                        <td class="py-2 px-4 border">R$ ${product.valor_total}</td>
-                        <td class="py-2 px-4 border">${product.quantidade_parcelado}</td>
-                        <td class="py-2 px-4 border">${valorParcela ? `R$ ${valorParcela}` : ''}</td>
-                        <td class="py-2 px-4 border">
+                        <td>${product.nome_produto}</td>
+                        <td>R$ ${product.valor_total}</td>
+                        <td>${product.quantidade_parcelado}</td>
+                        <td>${valorParcela ? `R$ ${valorParcela}` : ''}</td>
+                        <td>
                             <button onclick="openEditModal(${product.id})" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Editar</button>
                             <button onclick="openDeleteModal(${product.id})" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Excluir</button>
                         </td>
@@ -297,10 +426,8 @@
             .catch(error => console.error('Erro ao excluir produto:', error));
         });
 
-        window.addEventListener('load', function () {
-            loadProducts();
-            loadTotais();
-        });
+        loadTotais();
+        loadProducts();
     </script>
 </body>
 
