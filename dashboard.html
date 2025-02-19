@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-white h-screen flex flex-col">
+
+    <nav class="bg-blue-600 p-4 text-white shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full">
+            <span id="userName" class="text-lg font-medium"></span>
+            <button id="logoutButton" class="px-3 py-1 bg-red-600 rounded-md hover:bg-red-700 transition duration-300">
+                Sair
+            </button>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-6 mt-6 fade-in">
+        <h2 class="text-lg font-semibold mb-4">Painel de Controle</h2>
+
+        <!-- Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="card bg-green-200">
+                <h3 class="text-md font-medium">Total Saldo</h3>
+                <p id="totalSaldo" class="mt-2 text-gray-600">R$ 0,00</p>
+            </div>
+
+            <div class="card bg-blue-200">
+                <h3 class="text-md font-medium">Total Parcelado</h3>
+                <p id="totalParcelado" class="mt-2 text-gray-600">R$ 0,00</p>
+            </div>
+
+            <div class="card bg-yellow-200">
+                <h3 class="text-md font-medium">Valor Restante</h3>
+                <p id="valorRestante" class="mt-2 text-gray-600">R$ 0,00</p>
+            </div>
+
+            <div class="card bg-red-200">
+                <h3 class="text-md font-medium">Valor Negativo</h3>
+                <p id="valorNegativo" class="mt-2 text-red-600">R$ 0,00</p>
+            </div>
+        </div>
+
+        <!-- Lista de Produtos -->
+        <div class="mt-6">
+            <h3 class="text-md font-semibold mb-4">Lista de Produtos</h3>
+            <div class="table-container">
+                <table class="min-w-full bg-white border border-gray-300 text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="py-2 px-4 border">Produto</th>
+                            <th class="py-2 px-4 border">Valor</th>
+                            <th class="py-2 px-4 border">Qtd Parcelas</th>
+                            <th class="py-2 px-4 border">Valor Parcela</th>
+                            <th class="py-2 px-4 border">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Produto -->
+    <div id="editModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 class="text-xl font-semibold mb-4">Editar Produto</h3>
+            <form id="editProductForm">
+                <div class="mb-4">
+                    <label for="editProductName" class="block text-sm font-medium text-gray-700">Nome do Produto</label>
+                    <input type="text" id="editProductName" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editProductValue" class="block text-sm font-medium text-gray-700">Valor Total</label>
+                    <input type="number" id="editProductValue" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="editProductInstallments" class="block text-sm font-medium text-gray-700">Qtd Parcelas</label>
+                    <input type="number" id="editProductInstallments" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancelEditButton" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Excluir Produto -->
+    <div id="deleteModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h3 class="text-xl font-semibold mb-4">Confirmar Exclusão</h3>
+            <p>Você tem certeza que deseja excluir este produto?</p>
+            <div class="flex justify-end space-x-4 mt-4">
+                <button type="button" id="cancelDeleteButton" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                <button id="confirmDeleteButton" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function decodeToken(token) {
+            const payload = token.split('.')[1];
+            return JSON.parse(atob(payload));
+        }
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = decodeToken(token);
+            document.getElementById('userName').textContent = decodedToken.email.split('@')[0];
+        } else {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+
+        let products = [];
+        let currentEditingProductId = null;
+        let currentDeletingProductId = null;
+
+        function loadTotais() {
+            fetch('http://localhost:3001/totais', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => response.json())
+            .then(totals => {
+                const totalSaldo = parseFloat(totals.total_saldo) || 0;
+                const totalParcelado = parseFloat(totals.total_parcelado) || 0;
+                let valorRestante = totalSaldo - totalParcelado;
+                let valorNegativo = 0;
+
+                if (valorRestante < 0) {
+                    valorNegativo = valorRestante;
+                    valorRestante = 0;
+                }
+
+                document.getElementById('totalSaldo').textContent = `R$ ${totalSaldo.toFixed(2)}`;
+                document.getElementById('totalParcelado').textContent = `R$ ${totalParcelado.toFixed(2)}`;
+                document.getElementById('valorRestante').textContent = `R$ ${valorRestante.toFixed(2)}`;
+                document.getElementById('valorNegativo').textContent = `R$ ${valorNegativo.toFixed(2)}`;
+            })
+            .catch(error => console.error('Erro ao carregar os totais:', error));
+        }
+
+        function loadProducts() {
+            fetch('http://localhost:3001/produtos', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => response.json())
+            .then(data => {
+                products = data;
+                const productList = document.getElementById('productList');
+                productList.innerHTML = '';
+                let totalParcelado = 0;
+
+                if (products.length === 0) {
+                    productList.innerHTML = '<tr><td colspan="5" class="text-center py-2">Nenhum produto encontrado.</td></tr>';
+                    return;
+                }
+
+                products.forEach(product => {
+                    let valorParcela = '';
+                    if (product.quantidade_parcelado > 0) {
+                        valorParcela = (product.valor_total / product.quantidade_parcelado).toFixed(2);
+                        totalParcelado += product.valor_total;
+                    }
+
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td class="py-2 px-4 border">${product.nome_produto}</td>
+                        <td class="py-2 px-4 border">R$ ${product.valor_total}</td>
+                        <td class="py-2 px-4 border">${product.quantidade_parcelado}</td>
+                        <td class="py-2 px-4 border">${valorParcela ? `R$ ${valorParcela}` : ''}</td>
+                        <td class="py-2 px-4 border">
+                            <button onclick="openEditModal(${product.id})" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Editar</button>
+                            <button onclick="openDeleteModal(${product.id})" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Excluir</button>
+                        </td>
+                    `;
+                    productList.appendChild(newRow);
+                });
+
+                document.getElementById('totalParcelado').textContent = `R$ ${totalParcelado.toFixed(2)}`;
+            })
+            .catch(error => console.error('Erro ao carregar os produtos:', error));
+        }
+
+        function openEditModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            document.getElementById('editProductName').value = product.nome_produto;
+            document.getElementById('editProductValue').value = product.valor_total;
+            document.getElementById('editProductInstallments').value = product.quantidade_parcelado;
+
+            currentEditingProductId = product.id;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function openDeleteModal(productId) {
+            currentDeletingProductId = productId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        document.getElementById('cancelEditButton').addEventListener('click', function () {
+            document.getElementById('editModal').classList.add('hidden');
+        });
+
+        document.getElementById('editProductForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const updatedProduct = {
+                id: currentEditingProductId,
+                nome_produto: document.getElementById('editProductName').value,
+                valor_total: parseFloat(document.getElementById('editProductValue').value),
+                quantidade_parcelado: parseInt(document.getElementById('editProductInstallments').value)
+            };
+
+            fetch(`http://localhost:3001/produtos/${currentEditingProductId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(updatedProduct)
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadProducts();
+                loadTotais();
+                document.getElementById('editModal').classList.add('hidden');
+            })
+            .catch(error => console.error('Erro ao salvar produto:', error));
+        });
+
+        document.getElementById('cancelDeleteButton').addEventListener('click', function () {
+            document.getElementById('deleteModal').classList.add('hidden');
+        });
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+            fetch(`http://localhost:3001/produtos/${currentDeletingProductId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadProducts();
+                loadTotais();
+                document.getElementById('deleteModal').classList.add('hidden');
+            })
+            .catch(error => console.error('Erro ao excluir produto:', error));
+        });
+
+        window.addEventListener('load', function () {
+            loadProducts();
+            loadTotais();
+        });
+    </script>
+</body>
+
+</html>
