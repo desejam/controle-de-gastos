@@ -66,6 +66,9 @@
             <div id="alerta-sucesso-edicao" class="bg-green-500 text-white p-4 rounded-md mb-6 hidden">
                 Despesa editada com sucesso!
             </div>
+            <div id="alerta-sucesso-adicao" class="bg-green-500 text-white p-4 rounded-md mb-6 hidden">
+                Produto adicionado com sucesso!
+            </div>
             <div id="alerta-sucesso-exclusao" class="bg-red-500 text-white p-4 rounded-md mb-6 hidden">
                 Despesa excluída com sucesso!
             </div>
@@ -100,58 +103,57 @@
     </div>
 
     <!-- Modal de Adicionar Produto -->
-<!-- Modal de Adicionar Produto -->
-<div id="modal-adicionar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs w-full mx-2 sm:mx-0">
-        <h3 class="text-lg font-semibold mb-2 text-center">Adicionar Produto</h3>
-        <form id="form-adicionar">
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Nome da Despesa</label>
-                <input type="text" id="adicionar-nome_despesa" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Categoria</label>
-                <input type="text" id="adicionar-categoria" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Valor Total</label>
-                <input type="number" id="adicionar-valor_total" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Número de Parcelas</label>
-                <input type="number" id="adicionar-numero_parcelas" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Valor Parcelado</label>
-                <input type="number" id="adicionar-valor_parcelado" class="w-full px-1 py-1 border rounded-md">
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Data de Adição</label>
-                <input type="date" id="adicionar-data_adicao" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Data de Vencimento</label>
-                <input type="date" id="adicionar-data_vencimento" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Forma de Pagamento</label>
-                <select id="adicionar-forma_pagamento" class="w-full px-1 py-1 border rounded-md" required>
-                    <!-- As opções serão carregadas aqui -->
-                </select>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Status de Pagamento</label>
-                <select id="adicionar-status_pagamento" class="w-full px-1 py-1 border rounded-md" required>
-                    <!-- As opções serão carregadas aqui -->
-                </select>
-            </div>
-            <div class="flex justify-end space-x-1">
-                <button type="button" onclick="fecharModalAdicionar()" class="bg-gray-500 text-white py-1 px-2 rounded-md hover:bg-gray-600">Cancelar</button>
-                <button type="button" onclick="salvarNovoProduto()" class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">Salvar</button>
-            </div>
-        </form>
+    <div id="modal-adicionar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-2 rounded-lg shadow-md max-w-xs w-full mx-2 sm:mx-0">
+            <h3 class="text-lg font-semibold mb-2 text-center">Adicionar Produto</h3>
+            <form id="form-adicionar">
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Nome da Despesa</label>
+                    <input type="text" id="adicionar-nome_despesa" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Categoria</label>
+                    <input type="text" id="adicionar-categoria" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Valor Total</label>
+                    <input type="number" id="adicionar-valor_total" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Número de Parcelas</label>
+                    <input type="number" id="adicionar-numero_parcelas" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Valor Parcelado</label>
+                    <input type="number" id="adicionar-valor_parcelado" class="w-full px-1 py-1 border rounded-md">
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Data de Adição</label>
+                    <input type="date" id="adicionar-data_adicao" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Data de Vencimento</label>
+                    <input type="date" id="adicionar-data_vencimento" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Forma de Pagamento</label>
+                    <select id="adicionar-forma_pagamento" class="w-full px-1 py-1 border rounded-md" required>
+                        <!-- As opções serão carregadas aqui -->
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Status de Pagamento</label>
+                    <select id="adicionar-status_pagamento" class="w-full px-1 py-1 border rounded-md" required>
+                        <!-- As opções serão carregadas aqui -->
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-1">
+                    <button type="button" onclick="fecharModalAdicionar()" class="bg-gray-500 text-white py-1 px-2 rounded-md hover:bg-gray-600">Cancelar</button>
+                    <button type="button" onclick="salvarNovoProduto()" class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">Salvar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <div id="modal-excluir" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-6 rounded-lg shadow-md w-96">
@@ -165,58 +167,57 @@
     </div>
 
     <!-- Modal de Editar Produto -->
-<!-- Modal de Editar Produto -->
-<div id="modal-editar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs w-full mx-2 sm:mx-0">
-        <h3 class="text-lg font-semibold mb-2 text-center">Editar Produto</h3>
-        <form id="form-editar">
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Nome da Despesa</label>
-                <input type="text" id="editar-nome_despesa" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Categoria</label>
-                <input type="text" id="editar-categoria" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Valor Total</label>
-                <input type="number" id="editar-valor_total" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Número de Parcelas</label>
-                <input type="number" id="editar-numero_parcelas" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Valor Parcelado</label>
-                <input type="number" id="editar-valor_parcelado" class="w-full px-1 py-1 border rounded-md">
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Data de Adição</label>
-                <input type="date" id="editar-data_adicao" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Data de Vencimento</label>
-                <input type="date" id="editar-data_vencimento" class="w-full px-1 py-1 border rounded-md" required>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Forma de Pagamento</label>
-                <select id="editar-forma_pagamento" class="w-full px-1 py-1 border rounded-md" required>
-                    <!-- As opções serão carregadas aqui -->
-                </select>
-            </div>
-            <div class="mb-1">
-                <label class="block text-gray-700 text-sm">Status de Pagamento</label>
-                <select id="editar-status_pagamento" class="w-full px-1 py-1 border rounded-md" required>
-                    <!-- As opções serão carregadas aqui -->
-                </select>
-            </div>
-            <div class="flex justify-end space-x-1">
-                <button type="button" onclick="fecharModalEdicao()" class="bg-gray-500 text-white py-1 px-2 rounded-md hover:bg-gray-600">Cancelar</button>
-                <button type="button" onclick="salvarEdicao(produtoIdParaEditar)" class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">Salvar</button>
-            </div>
-        </form>
+    <div id="modal-editar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-2 rounded-lg shadow-md max-w-xs w-full mx-2 sm:mx-0">
+            <h3 class="text-lg font-semibold mb-2 text-center">Editar Produto</h3>
+            <form id="form-editar">
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Nome da Despesa</label>
+                    <input type="text" id="editar-nome_despesa" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Categoria</label>
+                    <input type="text" id="editar-categoria" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Valor Total</label>
+                    <input type="number" id="editar-valor_total" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Número de Parcelas</label>
+                    <input type="number" id="editar-numero_parcelas" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Valor Parcelado</label>
+                    <input type="number" id="editar-valor_parcelado" class="w-full px-1 py-1 border rounded-md">
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Data de Adição</label>
+                    <input type="date" id="editar-data_adicao" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Data de Vencimento</label>
+                    <input type="date" id="editar-data_vencimento" class="w-full px-1 py-1 border rounded-md" required>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Forma de Pagamento</label>
+                    <select id="editar-forma_pagamento" class="w-full px-1 py-1 border rounded-md" required>
+                        <!-- As opções serão carregadas aqui -->
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-sm">Status de Pagamento</label>
+                    <select id="editar-status_pagamento" class="w-full px-1 py-1 border rounded-md" required>
+                        <!-- As opções serão carregadas aqui -->
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-1">
+                    <button type="button" onclick="fecharModalEdicao()" class="bg-gray-500 text-white py-1 px-2 rounded-md hover:bg-gray-600">Cancelar</button>
+                    <button type="button" onclick="salvarEdicao(produtoIdParaEditar)" class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">Salvar</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- Modal de Configurações -->
     <div id="modal-configuracoes" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
@@ -248,82 +249,82 @@
         }
 
         function abrirModalEdicao(produto) {
-    produtoIdParaEditar = produto.id; // Armazena o ID do produto
+            produtoIdParaEditar = produto.id; // Armazena o ID do produto
 
-    // Preenche os campos do modal com os dados do produto
-    document.getElementById('editar-nome_despesa').value = produto.nome_despesa || '';
-    document.getElementById('editar-categoria').value = produto.categoria || '';
-    document.getElementById('editar-valor_total').value = produto.valor_total || '';
-    document.getElementById('editar-numero_parcelas').value = produto.numero_parcelas || '';
-    document.getElementById('editar-valor_parcelado').value = produto.valor_parcelado || '';
-    document.getElementById('editar-data_adicao').value = formatarData(produto.data_adicao) || '';
-    document.getElementById('editar-data_vencimento').value = formatarData(produto.data_vencimento) || '';
-    document.getElementById('editar-forma_pagamento').value = produto.forma_pagamento || '';
-    document.getElementById('editar-status_pagamento').value = produto.status_pagamento || '';
+            // Preenche os campos do modal com os dados do produto
+            document.getElementById('editar-nome_despesa').value = produto.nome_despesa || '';
+            document.getElementById('editar-categoria').value = produto.categoria || '';
+            document.getElementById('editar-valor_total').value = produto.valor_total || '';
+            document.getElementById('editar-numero_parcelas').value = produto.numero_parcelas || '';
+            document.getElementById('editar-valor_parcelado').value = produto.valor_parcelado || '';
+            document.getElementById('editar-data_adicao').value = formatarData(produto.data_adicao) || '';
+            document.getElementById('editar-data_vencimento').value = formatarData(produto.data_vencimento) || '';
+            document.getElementById('editar-forma_pagamento').value = produto.forma_pagamento || '';
+            document.getElementById('editar-status_pagamento').value = produto.status_pagamento || '';
 
-    // Carregar opções de forma de pagamento e status de pagamento
-    carregarOpcoes();
+            // Carregar opções de forma de pagamento e status de pagamento
+            carregarOpcoes();
 
-    document.getElementById('modal-editar').classList.remove('hidden');
-}
+            document.getElementById('modal-editar').classList.remove('hidden');
+        }
         function fecharModalEdicao() {
             document.getElementById('modal-editar').classList.add('hidden');
         }
 
         function abrirModalAdicionar() {
-    // Carregar opções de forma de pagamento e status de pagamento
-    carregarOpcoesAdicionar();
+            // Carregar opções de forma de pagamento e status de pagamento
+            carregarOpcoesAdicionar();
 
-    document.getElementById('modal-adicionar').classList.remove('hidden');
-}
+            document.getElementById('modal-adicionar').classList.remove('hidden');
+        }
 
         function fecharModalAdicionar() {
             document.getElementById('modal-adicionar').classList.add('hidden');
         }
 
         function carregarOpcoes() {
-    const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('authToken');
 
-    // Carregar formas de pagamento
-    axios.get('http://localhost:3001/formas-pagamento', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(response => {
-        const formasPagamento = response.data.formasPagamento;
-        const selectFormaPagamento = document.getElementById('editar-forma_pagamento');
+            // Carregar formas de pagamento
+            axios.get('http://localhost:3001/formas-pagamento', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => {
+                const formasPagamento = response.data.formasPagamento;
+                const selectFormaPagamento = document.getElementById('editar-forma_pagamento');
 
-        selectFormaPagamento.innerHTML = ''; // Limpa as opções existentes
-        formasPagamento.forEach(opcao => {
-            const option = document.createElement('option');
-            option.value = opcao;
-            option.textContent = opcao;
-            selectFormaPagamento.appendChild(option);
-        });
-    })
-    .catch(error => {
-        console.error('Erro ao carregar formas de pagamento', error);
-    });
+                selectFormaPagamento.innerHTML = ''; // Limpa as opções existentes
+                formasPagamento.forEach(opcao => {
+                    const option = document.createElement('option');
+                    option.value = opcao;
+                    option.textContent = opcao;
+                    selectFormaPagamento.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar formas de pagamento', error);
+            });
 
-    // Carregar status de pagamento
-    axios.get('http://localhost:3001/status-pagamento', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(response => {
-        const statusPagamento = response.data.statusPagamento;
-        const selectStatusPagamento = document.getElementById('editar-status_pagamento');
+            // Carregar status de pagamento
+            axios.get('http://localhost:3001/status-pagamento', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => {
+                const statusPagamento = response.data.statusPagamento;
+                const selectStatusPagamento = document.getElementById('editar-status_pagamento');
 
-        selectStatusPagamento.innerHTML = ''; // Limpa as opções existentes
-        statusPagamento.forEach(opcao => { // Corrigido para iterar sobre statusPagamento
-            const option = document.createElement('option');
-            option.value = opcao;
-            option.textContent = opcao;
-            selectStatusPagamento.appendChild(option);
-        });
-    })
-    .catch(error => {
-        console.error('Erro ao carregar status de pagamento', error);
-    });
-}
+                selectStatusPagamento.innerHTML = ''; // Limpa as opções existentes
+                statusPagamento.forEach(opcao => { // Corrigido para iterar sobre statusPagamento
+                    const option = document.createElement('option');
+                    option.value = opcao;
+                    option.textContent = opcao;
+                    selectStatusPagamento.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar status de pagamento', error);
+            });
+        }
 
         function carregarOpcoesAdicionar() {
             const token = localStorage.getItem('authToken');
@@ -370,49 +371,55 @@
         }
 
         function salvarNovoProduto() {
-    const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('authToken');
 
-    // Coletar valores dos campos do modal de adicionar produto
-    const nome_despesa = document.getElementById('adicionar-nome_despesa').value;
-    const categoria = document.getElementById('adicionar-categoria').value;
-    const valor_total = document.getElementById('adicionar-valor_total').value;
-    const numero_parcelas = document.getElementById('adicionar-numero_parcelas').value;
-    const valor_parcelado = document.getElementById('adicionar-valor_parcelado').value;
-    const data_adicao = document.getElementById('adicionar-data_adicao').value;
-    const data_vencimento = document.getElementById('adicionar-data_vencimento').value;
-    const forma_pagamento = document.getElementById('adicionar-forma_pagamento').value;
-    const status_pagamento = document.getElementById('adicionar-status_pagamento').value;
+            // Coletar valores dos campos do modal de adicionar produto
+            const nome_despesa = document.getElementById('adicionar-nome_despesa').value;
+            const categoria = document.getElementById('adicionar-categoria').value;
+            const valor_total = document.getElementById('adicionar-valor_total').value;
+            const numero_parcelas = document.getElementById('adicionar-numero_parcelas').value;
+            const valor_parcelado = document.getElementById('adicionar-valor_parcelado').value;
+            const data_adicao = document.getElementById('adicionar-data_adicao').value;
+            const data_vencimento = document.getElementById('adicionar-data_vencimento').value;
+            const forma_pagamento = document.getElementById('adicionar-forma_pagamento').value;
+            const status_pagamento = document.getElementById('adicionar-status_pagamento').value;
 
-    // Criar objeto de dados para enviar no POST
-    const dataToAdd = {
-        nome_despesa,
-        categoria,
-        valor_total: parseFloat(valor_total),
-        numero_parcelas: parseInt(numero_parcelas, 10),
-        valor_parcelado: valor_parcelado ? parseFloat(valor_parcelado) : null,
-        data_adicao,
-        data_vencimento,
-        forma_pagamento,
-        status_pagamento
-    };
+            // Criar objeto de dados para enviar no POST
+            const dataToAdd = {
+                nome_despesa,
+                categoria,
+                valor_total: parseFloat(valor_total),
+                numero_parcelas: parseInt(numero_parcelas, 10),
+                valor_parcelado: valor_parcelado ? parseFloat(valor_parcelado) : null,
+                data_adicao,
+                data_vencimento,
+                forma_pagamento,
+                status_pagamento
+            };
 
-    // Enviar a requisição POST
-    axios.post('http://localhost:3001/produtos', dataToAdd, {
-        headers: {
-            'Authorization': `Bearer ${token}`
+            // Enviar a requisição POST
+            axios.post('http://localhost:3001/produtos', dataToAdd, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                console.log('Produto adicionado com sucesso:', response.data);
+                fecharModalAdicionar(); // Fecha o modal
+                carregarProdutos(); // Recarregar a lista de produtos após a adição
+                
+                // Exibir alerta de sucesso
+                const alertaSucessoAdicao = document.getElementById('alerta-sucesso-adicao');
+                alertaSucessoAdicao.classList.remove('hidden'); // Mostra o alerta
+                setTimeout(() => {
+                    alertaSucessoAdicao.classList.add('hidden'); // Oculta após 3 segundos
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar o produto:', error);
+                alert('Erro ao adicionar o produto!');
+            });
         }
-    })
-    .then(response => {
-        console.log('Produto adicionado com sucesso:', response.data);
-        fecharModalAdicionar(); // Fecha o modal
-        carregarProdutos(); // Recarregar a lista de produtos após a adição
-        alert('Produto adicionado com sucesso!'); // Mensagem de sucesso
-    })
-    .catch(error => {
-        console.error('Erro ao adicionar o produto:', error);
-        alert('Erro ao adicionar o produto!');
-    });
-}
 
         function salvarEdicao(id) {
             const token = localStorage.getItem('authToken');
