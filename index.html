@@ -32,10 +32,9 @@
             // Se a resposta da API indicar um erro
             document.getElementById('message').textContent = `❌ Erro: ${error.response.data.message || 'Credenciais inválidas.'}`;
           } else if (error.request) {
-            // Se a requisição não obteve resposta
             document.getElementById('message').textContent = '❌ Erro de conexão.';
           } else {
-            // Erro inesperado
+
             document.getElementById('message').textContent = '❌ Ocorreu um erro inesperado.';
           }
           console.error('Erro ao fazer login:', error);
