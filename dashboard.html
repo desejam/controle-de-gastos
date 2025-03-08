@@ -15,6 +15,7 @@
                 <button onclick="abrirModalAdicionar()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Adicionar Despesa</button>
                 <button onclick="abrirModalConfiguracoes()" class="bg-gray-500 text-white px-4 py-2 rounded-md">Configurações</button>
                 <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-md">Sair</button>
+                <button onclick="abrirModalNotificacoes()" class="bg-yellow-500 text-white px-4 py-2 rounded-md">Notificações</button>
             </div>
         </div>
         <div class="bg-blue-500 text-white p-4 rounded-md mb-6">
@@ -67,7 +68,7 @@
                 Despesa editada com sucesso!
             </div>
             <div id="alerta-sucesso-adicao" class="bg-green-500 text-white p-4 rounded-md mb-6 hidden">
-                Despesa adicionado com sucesso!
+                Despesa adicionada com sucesso!
             </div>
             <div id="alerta-sucesso-exclusao" class="bg-red-500 text-white p-4 rounded-md mb-6 hidden">
                 Despesa excluída com sucesso!
@@ -232,10 +233,83 @@
         </div>
     </div>
 
+    <!-- Modal de Notificações -->
+   <!-- Modal de Notificações -->
+<div id="modal-notificacoes" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-md w-full mx-2 sm:mx-0">
+        <h3 class="text-lg font-semibold mb-2 text-center">Notificações</h3>
+        <div id="lista-notificacoes" class="max-h-60 overflow-y-auto mb-4">
+            <p class="text-gray-500 text-center">Nenhuma notificação.</p>
+        </div>
+        <div class="flex justify-between">
+            <button type="button" onclick="limparNotificacoes()" class="bg-red-500 text-white py-1 px-4 rounded-md hover:bg-red-600 w-full mr-2">Limpar Notificações</button>
+            <button type="button" onclick="fecharModalNotificacoes()" class="bg-gray-500 text-white py-1 px-4 rounded-md hover:bg-gray-600 w-full">Fechar</button>
+        </div>
+    </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         let produtoIdParaExcluir = null;
         let produtoIdParaEditar = null;
+
+        function formatarDataNotificacao(data) {
+            const dataObj = new Date(data);
+            const dia = String(dataObj.getDate()).padStart(2, '0'); // Dia com 2 dígitos
+            const mes = String(dataObj.getMonth() + 1).padStart(2, '0'); // Mês com 2 dígitos
+            const ano = dataObj.getFullYear(); // Ano com 4 dígitos
+
+            return `${dia}-${mes}-${ano}`; // Retorna a data no formato DD-MM-AAAA
+        }
+
+        function abrirModalNotificacoes() {
+            const token = localStorage.getItem('authToken');
+            axios.get('http://localhost:3001/notificacoes', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => {
+                const listaNotificacoes = document.getElementById('lista-notificacoes');
+                listaNotificacoes.innerHTML = ''; // Limpa as notificações existentes
+
+                if (response.data.length > 0) {
+                    response.data.forEach(notificacao => {
+                        const notificacaoItem = document.createElement('p');
+                        // Formata a data usando a nova função
+                        const dataFormatada = formatarDataNotificacao(notificacao.timestamp);
+                        notificacaoItem.textContent = `${dataFormatada}: ${notificacao.message}`;
+                        listaNotificacoes.appendChild(notificacaoItem);
+                    });
+                } else {
+                    listaNotificacoes.innerHTML = '<p class="text-gray-500 text-center">Nenhuma notificação.</p>';
+                }
+
+                document.getElementById('modal-notificacoes').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Erro ao carregar notificações:', error);
+            });
+        }
+
+        function limparNotificacoes() {
+    const token = localStorage.getItem('authToken');
+    axios.delete('http://localhost:3001/notificacoes', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => {
+        console.log('Notificações limpas com sucesso:', response.data);
+        // Limpa a lista de notificações no modal
+        const listaNotificacoes = document.getElementById('lista-notificacoes');
+        listaNotificacoes.innerHTML = '<p class="text-gray-500 text-center">Nenhuma notificação.</p>';
+    })
+    .catch(error => {
+        console.error('Erro ao limpar notificações:', error);
+        alert('Erro ao limpar notificações.');
+    });
+}
+
+        function fecharModalNotificacoes() {
+            document.getElementById('modal-notificacoes').classList.add('hidden');
+        }
 
         function formatarData(data) {
             if (!data) return 'Data inválida'; // Caso a data seja nula ou indefinida
@@ -245,7 +319,7 @@
             const mes = String(dataObj.getMonth() + 1).padStart(2, '0'); // Mês com 2 dígitos
             const ano = dataObj.getFullYear(); // Ano com 4 dígitos
 
-            return `${ano}-${mes}-${dia}`;
+            return `${ano}-${mes}-${dia}`; // Retorna a data no formato AAAA-MM-DD
         }
 
         function abrirModalEdicao(produto) {
@@ -314,7 +388,7 @@
                 const selectStatusPagamento = document.getElementById('editar-status_pagamento');
 
                 selectStatusPagamento.innerHTML = ''; // Limpa as opções existentes
-                statusPagamento.forEach(opcao => { // Corrigido para iterar sobre statusPagamento
+                statusPagamento.forEach(opcao => {
                     const option = document.createElement('option');
                     option.value = opcao;
                     option.textContent = opcao;
@@ -357,333 +431,333 @@
                 const statusPagamento = response.data.statusPagamento;
                 const selectStatusPagamento = document.getElementById('adicionar-status_pagamento');
 
-                selectStatusPagamento.innerHTML = ''; // Limpa as opções existentes
-                statusPagamento.forEach(opcao => {
-                    const option = document.createElement('option');
-                    option.value = opcao;
-                    option.textContent = opcao;
-                    selectStatusPagamento.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar status de pagamento', error);
-            });
-        }
+selectStatusPagamento.innerHTML = ''; // Limpa as opções existentes
+statusPagamento.forEach(opcao => {
+    const option = document.createElement('option');
+    option.value = opcao;
+    option.textContent = opcao;
+    selectStatusPagamento.appendChild(option);
+});
+})
+.catch(error => {
+console.error('Erro ao carregar status de pagamento', error);
+});
+}
 
-        function salvarNovoProduto() {
-            const token = localStorage.getItem('authToken');
+function salvarNovoProduto() {
+const token = localStorage.getItem('authToken');
 
-            // Coletar valores dos campos do modal de adicionar produto
-            const nome_despesa = document.getElementById('adicionar-nome_despesa').value;
-            const categoria = document.getElementById('adicionar-categoria').value;
-            const valor_total = document.getElementById('adicionar-valor_total').value;
-            const numero_parcelas = document.getElementById('adicionar-numero_parcelas').value;
-            const valor_parcelado = document.getElementById('adicionar-valor_parcelado').value;
-            const data_adicao = document.getElementById('adicionar-data_adicao').value;
-            const data_vencimento = document.getElementById('adicionar-data_vencimento').value;
-            const forma_pagamento = document.getElementById('adicionar-forma_pagamento').value;
-            const status_pagamento = document.getElementById('adicionar-status_pagamento').value;
+// Coletar valores dos campos do modal de adicionar produto
+const nome_despesa = document.getElementById('adicionar-nome_despesa').value;
+const categoria = document.getElementById('adicionar-categoria').value;
+const valor_total = document.getElementById('adicionar-valor_total').value;
+const numero_parcelas = document.getElementById('adicionar-numero_parcelas').value;
+const valor_parcelado = document.getElementById('adicionar-valor_parcelado').value;
+const data_adicao = document.getElementById('adicionar-data_adicao').value;
+const data_vencimento = document.getElementById('adicionar-data_vencimento').value;
+const forma_pagamento = document.getElementById('adicionar-forma_pagamento').value;
+const status_pagamento = document.getElementById('adicionar-status_pagamento').value;
 
-            // Criar objeto de dados para enviar no POST
-            const dataToAdd = {
-                nome_despesa,
-                categoria,
-                valor_total: parseFloat(valor_total),
-                numero_parcelas: parseInt(numero_parcelas, 10),
-                valor_parcelado: valor_parcelado ? parseFloat(valor_parcelado) : null,
-                data_adicao,
-                data_vencimento,
-                forma_pagamento,
-                status_pagamento
-            };
+// Criar objeto de dados para enviar no POST
+const dataToAdd = {
+nome_despesa,
+categoria,
+valor_total: parseFloat(valor_total),
+numero_parcelas: parseInt(numero_parcelas, 10),
+valor_parcelado: valor_parcelado ? parseFloat(valor_parcelado) : null,
+data_adicao,
+data_vencimento,
+forma_pagamento,
+status_pagamento
+};
 
-            // Enviar a requisição POST
-            axios.post('http://localhost:3001/produtos', dataToAdd, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                console.log('Produto adicionado com sucesso:', response.data);
-                fecharModalAdicionar(); // Fecha o modal
-                carregarProdutos(); // Recarregar a lista de produtos após a adição
-                
-                // Exibir alerta de sucesso
-                const alertaSucessoAdicao = document.getElementById('alerta-sucesso-adicao');
-                alertaSucessoAdicao.classList.remove('hidden'); // Mostra o alerta
-                setTimeout(() => {
-                    alertaSucessoAdicao.classList.add('hidden'); // Oculta após 3 segundos
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Erro ao adicionar o produto:', error);
-                alert('Erro ao adicionar o produto!');
-            });
-        }
+// Enviar a requisição POST
+axios.post('http://localhost:3001/produtos', dataToAdd, {
+headers: {
+    'Authorization': `Bearer ${token}`
+}
+})
+.then(response => {
+console.log('Produto adicionado com sucesso:', response.data);
+fecharModalAdicionar(); // Fecha o modal
+carregarProdutos(); // Recarregar a lista de produtos após a adição
 
-        function salvarEdicao(id) {
-            const token = localStorage.getItem('authToken');
+// Exibir alerta de sucesso
+const alertaSucessoAdicao = document.getElementById('alerta-sucesso-adicao');
+alertaSucessoAdicao.classList.remove('hidden'); // Mostra o alerta
+setTimeout(() => {
+    alertaSucessoAdicao.classList.add('hidden'); // Oculta após 3 segundos
+}, 3000);
+})
+.catch(error => {
+console.error('Erro ao adicionar o produto:', error);
+alert('Erro ao adicionar o produto!');
+});
+}
 
-            // Coletar valores dos campos (podem ser vazios ou não alterados)
-            const nome_despesa = document.getElementById('editar-nome_despesa').value;
-            const categoria = document.getElementById('editar-categoria').value;
-            const valor_total = document.getElementById('editar-valor_total').value;
-            const numero_parcelas = document.getElementById('editar-numero_parcelas').value;
-            const valor_parcelado = document.getElementById('editar-valor_parcelado').value;
-            const data_adicao = document.getElementById('editar-data_adicao').value; // Adicionando data de adição
-            const data_vencimento = document.getElementById('editar-data_vencimento').value;
-            const forma_pagamento = document.getElementById('editar-forma_pagamento').value;
-            const status_pagamento = document.getElementById('editar-status_pagamento').value;
+function salvarEdicao(id) {
+const token = localStorage.getItem('authToken');
 
-            // Criar objeto de dados para enviar no PUT
-            const dataToUpdate = {};
+// Coletar valores dos campos (podem ser vazios ou não alterados)
+const nome_despesa = document.getElementById('editar-nome_despesa').value;
+const categoria = document.getElementById('editar-categoria').value;
+const valor_total = document.getElementById('editar-valor_total').value;
+const numero_parcelas = document.getElementById('editar-numero_parcelas').value;
+const valor_parcelado = document.getElementById('editar-valor_parcelado').value;
+const data_adicao = document.getElementById('editar-data_adicao').value; // Adicionando data de adição
+const data_vencimento = document.getElementById('editar-data_vencimento').value;
+const forma_pagamento = document.getElementById('editar-forma_pagamento').value;
+const status_pagamento = document.getElementById('editar-status_pagamento').value;
 
-            // Adicionar apenas os campos que foram preenchidos ou alterados
-            if (nome_despesa) dataToUpdate.nome_despesa = nome_despesa;
-            if (categoria) dataToUpdate.categoria = categoria;
-            if (valor_total) dataToUpdate.valor_total = parseFloat(valor_total);
-            if (numero_parcelas) dataToUpdate.numero_parcelas = parseInt(numero_parcelas, 10);
-            if (valor_parcelado) dataToUpdate.valor_parcelado = parseFloat(valor_parcelado); // Campo não obrigatório
-            if (data_adicao) dataToUpdate.data_adicao = data_adicao; // Adicionando data de adição
-            if (data_vencimento) dataToUpdate.data_vencimento = data_vencimento;
-            if (forma_pagamento) dataToUpdate.forma_pagamento = forma_pagamento;
-            if (status_pagamento) dataToUpdate.status_pagamento = status_pagamento;
+// Criar objeto de dados para enviar no PUT
+const dataToUpdate = {};
 
-            // Verificar se pelo menos um campo foi alterado
-            if (Object.keys(dataToUpdate).length === 0) {
-                alert('Nenhum campo foi alterado.');
-                return;
-            }
+// Adicionar apenas os campos que foram preenchidos ou alterados
+if (nome_despesa) dataToUpdate.nome_despesa = nome_despesa;
+if (categoria) dataToUpdate.categoria = categoria;
+if (valor_total) dataToUpdate.valor_total = parseFloat(valor_total);
+if (numero_parcelas) dataToUpdate.numero_parcelas = parseInt(numero_parcelas, 10);
+if (valor_parcelado) dataToUpdate.valor_parcelado = parseFloat(valor_parcelado); // Campo não obrigatório
+if (data_adicao) dataToUpdate.data_adicao = data_adicao; // Adicionando data de adição
+if (data_vencimento) dataToUpdate.data_vencimento = data_vencimento;
+if (forma_pagamento) dataToUpdate.forma_pagamento = forma_pagamento;
+if (status_pagamento) dataToUpdate.status_pagamento = status_pagamento;
 
-            // Log dos dados enviados
-            console.log('Dados enviados para atualização:', dataToUpdate);
+// Verificar se pelo menos um campo foi alterado
+if (Object.keys(dataToUpdate).length === 0) {
+alert('Nenhum campo foi alterado.');
+return;
+}
 
-            // Enviar a requisição PUT
-            axios.put(`http://localhost:3001/produtos/${id}`, dataToUpdate, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                console.log('Produto editado com sucesso:', response.data);
-                document.getElementById('modal-editar').classList.add('hidden');
-                carregarProdutos(); // Recarregar a lista de produtos após a edição
-                document.getElementById('alerta-sucesso-edicao').classList.remove('hidden'); // Exibe alerta de edição
-                setTimeout(() => {
-                    document.getElementById('alerta-sucesso-edicao').classList.add('hidden'); // Oculta após 3 segundos
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Erro ao editar o produto:', error);
-                if (error.response) {
-                    console.error('Resposta da API:', error.response.data);
-                    console.error('Status:', error.response.status);
-                }
-                alert('Erro ao editar o produto!');
-            });
-        }
+// Log dos dados enviados
+console.log('Dados enviados para atualização:', dataToUpdate);
 
-        function carregarProdutos(filtro = '') {
-            const token = localStorage.getItem('authToken');
-            axios.get('http://localhost:3001/produtos', {
-                headers: { 'Authorization': `Bearer ${token}` },
-                params: { categoria: filtro }
-            })
-            .then(response => {
-                const produtosList = document.getElementById('produtos-list');
-                if (response.data.produtos && response.data.produtos.length > 0) {
-                    produtosList.innerHTML = ''; // Limpar a lista antes de adicionar novos itens
-                    response.data.produtos.forEach(produto => {
-                        const produtoItem = document.createElement('tr');
-                        produtoItem.classList.add('border-b');
+// Enviar a requisição PUT
+axios.put(`http://localhost:3001/produtos/${id}`, dataToUpdate, {
+headers: {
+    'Authorization': `Bearer ${token}`
+}
+})
+.then(response => {
+console.log('Produto editado com sucesso:', response.data);
+document.getElementById('modal-editar').classList.add('hidden');
+carregarProdutos(); // Recarregar a lista de produtos após a edição
+document.getElementById('alerta-sucesso-edicao').classList.remove('hidden'); // Exibe alerta de edição
+setTimeout(() => {
+    document.getElementById('alerta-sucesso-edicao').classList.add('hidden'); // Oculta após 3 segundos
+}, 3000);
+})
+.catch(error => {
+console.error('Erro ao editar o produto:', error);
+if (error.response) {
+    console.error('Resposta da API:', error.response.data);
+    console.error('Status:', error.response.status);
+}
+alert('Erro ao editar o produto!');
+});
+}
 
-                        // Garantir que os valores venham corretamente do banco ou mostrar 'Desconhecido'
-                        const formaPagamento = produto.forma_pagamento ? produto.forma_pagamento : 'Desconhecido';
-                        const statusPagamento = produto.status_pagamento ? produto.status_pagamento : 'Desconhecido';
+function carregarProdutos(filtro = '') {
+const token = localStorage.getItem('authToken');
+axios.get('http://localhost:3001/produtos', {
+headers: { 'Authorization': `Bearer ${token}` },
+params: { categoria: filtro }
+})
+.then(response => {
+const produtosList = document.getElementById('produtos-list');
+if (response.data.produtos && response.data.produtos.length > 0) {
+    produtosList.innerHTML = ''; // Limpar a lista antes de adicionar novos itens
+    response.data.produtos.forEach(produto => {
+        const produtoItem = document.createElement('tr');
+        produtoItem.classList.add('border-b');
 
-                        produtoItem.innerHTML = `
-                            <td class="px-4 py-2">${produto.nome_despesa}</td>
-                            <td class="px-4 py-2">${produto.categoria}</td>
-                            <td class="px-4 py-2">R$ ${parseFloat(produto.valor_total).toFixed(2)}</td>
-                            <td class="px-4 py-2">${produto.numero_parcelas}</td>
-                            <td class="px-4 py-2">R$ ${parseFloat(produto.valor_parcelado).toFixed(2)}</td>
-                            <td class="px-4 py-2">${formatarData(produto.data_adicao)}</td>
-                            <td class="px-4 py-2">${formatarData(produto.data_vencimento)}</td>
-                            <td class="px-4 py-2">${formaPagamento}</td>
-                            <td class="px-4 py-2">${statusPagamento}</td>
-                            <td class="px-4 py-2">
-                                <div class="flex space-x-2">
-                                    <button onclick="abrirModalEdicao(${JSON.stringify(produto).replace(/"/g, '&quot;')})" class="bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600">Editar</button>
-                                    <button onclick="abrirModalExclusao(${produto.id})" class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600">Excluir</button>
-                                </div>
-                            </td>
-                        `;
-                        produtosList.appendChild(produtoItem);
-                    });
-                } else {
-                    produtosList.innerHTML = `
-                        <tr>
-                            <td colspan="10" class="text-center p-4 text-gray-500">Nenhum produto encontrado.</td>
-                        </tr>
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error('❌ Erro ao carregar produtos:', error);
-                const produtosList = document.getElementById('produtos-list');
-                produtosList.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="text-center p-4 text-gray-500">❌ Nenhuma despesa encontrada.</td>
-                    </tr>
-                `;
-            });
-        }
+        // Garantir que os valores venham corretamente do banco ou mostrar 'Desconhecido'
+        const formaPagamento = produto.forma_pagamento ? produto.forma_pagamento : 'Desconhecido';
+        const statusPagamento = produto.status_pagamento ? produto.status_pagamento : 'Desconhecido';
 
-        function abrirModalExclusao(id) {
-            produtoIdParaExcluir = id;
-            document.getElementById('modal-excluir').classList.remove('hidden');
-        }
+        produtoItem.innerHTML = `
+            <td class="px-4 py-2">${produto.nome_despesa}</td>
+            <td class="px-4 py-2">${produto.categoria}</td>
+            <td class="px-4 py-2">R$ ${parseFloat(produto.valor_total).toFixed(2)}</td>
+            <td class="px-4 py-2">${produto.numero_parcelas}</td>
+            <td class="px-4 py-2">R$ ${parseFloat(produto.valor_parcelado).toFixed(2)}</td>
+            <td class="px-4 py-2">${formatarData(produto.data_adicao)}</td>
+            <td class="px-4 py-2">${formatarData(produto.data_vencimento)}</td>
+            <td class="px-4 py-2">${formaPagamento}</td>
+            <td class="px-4 py-2">${statusPagamento}</td>
+            <td class="px-4 py-2">
+                <div class="flex space-x-2">
+                    <button onclick="abrirModalEdicao(${JSON.stringify(produto).replace(/"/g, '&quot;')})" class="bg-blue-500 text-white py-1 px-3 rounded-md hover:bg-blue-600">Editar</button>
+                    <button onclick="abrirModalExclusao(${produto.id})" class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600">Excluir</button>
+                </div>
+            </td>
+        `;
+        produtosList.appendChild(produtoItem);
+    });
+} else {
+    produtosList.innerHTML = `
+        <tr>
+            <td colspan="10" class="text-center p-4 text-gray-500">Nenhum produto encontrado.</td>
+        </tr>
+    `;
+}
+})
+.catch(error => {
+console.error('❌ Erro ao carregar produtos:', error);
+const produtosList = document.getElementById('produtos-list');
+produtosList.innerHTML = `
+    <tr>
+        <td colspan="10" class="text-center p-4 text-gray-500">❌ Nenhuma despesa encontrada.</td>
+    </tr>
+`;
+});
+}
 
-        function fecharModalExclusao() {
-            document.getElementById('modal-excluir').classList.add('hidden');
-        }
+function abrirModalExclusao(id) {
+produtoIdParaExcluir = id;
+document.getElementById('modal-excluir').classList.remove('hidden');
+}
 
-        function confirmarExclusao() {
-            if (produtoIdParaExcluir) {
-                const token = localStorage.getItem('authToken');
-                axios.delete(`http://localhost:3001/produtos/${produtoIdParaExcluir}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                })
-                .then(response => {
-                    fecharModalExclusao(); // Fecha o modal de confirmação
-                    exibirAlertaSucessoExclusao(); // Exibe o alerta de sucesso
-                    carregarProdutos();  // Recarregar a lista de produtos após a exclusão
-                })
-                .catch(error => {
-                    console.error('Erro ao excluir o produto', error);
-                    alert('Erro ao excluir o produto.');
-                    fecharModalExclusao();
-                });
-            }
-        }
+function fecharModalExclusao() {
+document.getElementById('modal-excluir').classList.add('hidden');
+}
 
-        function exibirAlertaSucessoExclusao() {
-            const alertaSucesso = document.getElementById('alerta-sucesso-exclusao');
-            alertaSucesso.classList.remove('hidden'); // Mostra o alerta
-            setTimeout(() => {
-                alertaSucesso.classList.add('hidden'); // Oculta o alerta após 3 segundos
-            }, 3000); // 3000 milissegundos = 3 segundos
-        }
+function confirmarExclusao() {
+if (produtoIdParaExcluir) {
+const token = localStorage.getItem('authToken');
+axios.delete(`http://localhost:3001/produtos/${produtoIdParaExcluir}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(response => {
+    fecharModalExclusao(); // Fecha o modal de confirmação
+    exibirAlertaSucessoExclusao(); // Exibe o alerta de sucesso
+    carregarProdutos();  // Recarregar a lista de produtos após a exclusão
+})
+.catch(error => {
+    console.error('Erro ao excluir o produto', error);
+    alert('Erro ao excluir o produto.');
+    fecharModalExclusao();
+});
+}
+}
 
-        function abrirModalConfiguracoes() {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Você precisa estar logado para acessar as configurações.');
-                return;
-            }
+function exibirAlertaSucessoExclusao() {
+const alertaSucesso = document.getElementById('alerta-sucesso-exclusao');
+alertaSucesso.classList.remove('hidden'); // Mostra o alerta
+setTimeout(() => {
+alertaSucesso.classList.add('hidden'); // Oculta o alerta após 3 segundos
+}, 3000); // 3000 milissegundos = 3 segundos
+}
 
-            axios.get('http://localhost:3001/saldo', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            .then(response => {
-                if (response.data && response.data.saldo_total !== undefined) {
-                    document.getElementById('novo-saldo').value = response.data.saldo_total; // Preenche o campo com o saldo atual
-                    document.getElementById('modal-configuracoes').classList.remove('hidden'); // Abre o modal
-                } else {
-                    alert('Erro: saldo não encontrado na resposta.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao carregar saldo:', error);
-                alert('Erro ao carregar saldo. Verifique se o servidor está funcionando.');
-            });
-        }
+function abrirModalConfiguracoes() {
+const token = localStorage.getItem('authToken');
+if (!token) {
+alert('Você precisa estar logado para acessar as configurações.');
+return;
+}
 
-        function fecharModalConfiguracoes() {
-            document.getElementById('modal-configuracoes').classList.add('hidden');
-        }
+axios.get('http://localhost:3001/saldo', {
+headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(response => {
+if (response.data && response.data.saldo_total !== undefined) {
+    document.getElementById('novo-saldo').value = response.data.saldo_total; // Preenche o campo com o saldo atual
+    document.getElementById('modal-configuracoes').classList.remove('hidden'); // Abre o modal
+} else {
+    alert('Erro: saldo não encontrado na resposta.');
+}
+})
+.catch(error => {
+console.error('Erro ao carregar saldo:', error);
+alert('Erro ao carregar saldo. Verifique se o servidor está funcionando.');
+});
+}
 
-        function atualizarSaldo() {
-            const novoSaldo = document.getElementById('novo-saldo').value;
-            const token = localStorage.getItem('authToken');
+function fecharModalConfiguracoes() {
+document.getElementById('modal-configuracoes').classList.add('hidden');
+}
 
-            if (!token) {
-                alert('Você precisa estar logado para atualizar o saldo.');
-                return;
-            }
+function atualizarSaldo() {
+const novoSaldo = document.getElementById('novo-saldo').value;
+const token = localStorage.getItem('authToken');
 
-            if (!novoSaldo || isNaN(novoSaldo)) {
-                alert('Por favor, insira um valor válido para o saldo.');
-                return;
-            }
+if (!token) {
+alert('Você precisa estar logado para atualizar o saldo.');
+return;
+}
 
-            axios.put('http://localhost:3001/saldo', { saldo_total: parseFloat(novoSaldo) }, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            .then(response => {
-                if (response.data && response.data.message) {
-                    // Atualiza o saldo no card da dashboard
-                    document.getElementById('saldoTotal').textContent = `R$ ${parseFloat(novoSaldo).toFixed(2)}`; 
-                    fecharModalConfiguracoes();
+if (!novoSaldo || isNaN(novoSaldo)) {
+alert('Por favor, insira um valor válido para o saldo.');
+return;
+}
 
-                    // Exibe a mensagem de sucesso na dashboard
-                    const mensagemSucessoSaldo = document.getElementById('mensagem-sucesso-saldo');
-                    mensagemSucessoSaldo.classList.remove('hidden'); // Mostra a mensagem
-                    setTimeout(() => {
-                        mensagemSucessoSaldo.classList.add('hidden'); // Oculta após 3 segundos
-                    }, 3000); // 3000 milissegundos = 3 segundos
+axios.put('http://localhost:3001/saldo', { saldo_total: parseFloat(novoSaldo) }, {
+headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(response => {
+if (response.data && response.data.message) {
+    // Atualiza o saldo no card da dashboard
+    document.getElementById('saldoTotal').textContent = `R$ ${parseFloat(novoSaldo).toFixed(2)}`; 
+    fecharModalConfiguracoes();
 
-                    carregarProdutos(); // Recarregar produtos para refletir o novo saldo
-                } else {
-                    alert('Erro ao atualizar o saldo. Verifique a resposta da API.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao atualizar o saldo:', error);
-                alert('Erro ao atualizar o saldo. Verifique se o servidor está funcionando.');
-            });
-        }
+    // Exibe a mensagem de sucesso na dashboard
+    const mensagemSucessoSaldo = document.getElementById('mensagem-sucesso-saldo');
+    mensagemSucessoSaldo.classList.remove('hidden'); // Mostra a mensagem
+    setTimeout(() => {
+        mensagemSucessoSaldo.classList.add('hidden'); // Oculta após 3 segundos
+    }, 3000); // 3000 milissegundos = 3 segundos
 
-        function logout() {
-            localStorage.removeItem('authToken');
-            window.location.href = 'index.html';  // Redireciona para a página de login
-        }
+    carregarProdutos(); // Recarregar produtos para refletir o novo saldo
+} else {
+    alert('Erro ao atualizar o saldo. Verifique a resposta da API.');
+}
+})
+.catch(error => {
+console.error('Erro ao atualizar o saldo:', error);
+alert('Erro ao atualizar o saldo. Verifique se o servidor está funcionando.');
+});
+}
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const token = localStorage.getItem('authToken');
-            
-            if (!token) {
-                window.location.href = 'index.html';  // Redireciona se não estiver autenticado
-            } else {
-                // Carregar dados do Dashboard
-                axios.get('http://localhost:3001/dashboard', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                })
-                .then(response => {
-                    const toFixedValue = (value) => {
-                        return !isNaN(value) && value !== null ? `R$ ${Number(value).toFixed(2)}` : 'R$ 0,00';
-                    };
+function logout() {
+localStorage.removeItem('authToken');
+window.location.href = 'index.html';  // Redireciona para a página de login
+}
 
-                    if (response.data) {
-                        document.getElementById('saldoTotal').textContent = toFixedValue(response.data.saldoTotal);
-                        document.getElementById('parcelado').textContent = toFixedValue(response.data.totalParcelado);
-                        document.getElementById('saldoRestante').textContent = toFixedValue(response.data.saldoRestante);
-                        document.getElementById('negativo').textContent = toFixedValue(response.data.saldoNegativo);
-                        document.getElementById('totalPix').textContent = toFixedValue(response.data.totalPagoPix);
-                        document.getElementById('username').textContent = response.data.username;  // Exibe o nome do usuário
-                    } else {
-                        alert('⚠️ Dados inválidos recebidos da API.');
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ Erro ao carregar dados do dashboard:', error);
-                    if (error.response && error.response.status === 401) {
-                        window.location.href = 'index.html';  // Redireciona se não autorizado
-                    }
-                });
-                carregarProdutos(); // Carregar todos os produtos ao iniciar
-            }
-        });
-    </script>
+document.addEventListener('DOMContentLoaded', function () {
+const token = localStorage.getItem('authToken');
+
+if (!token) {
+window.location.href = 'index.html';  // Redireciona se não estiver autenticado
+} else {
+// Carregar dados do Dashboard
+axios.get('http://localhost:3001/dashboard', {
+    headers: { 'Authorization': `Bearer ${token}` }
+})
+.then(response => {
+    const toFixedValue = (value) => {
+        return !isNaN(value) && value !== null ? `R$ ${Number(value).toFixed(2)}` : 'R$ 0,00';
+    };
+
+    if (response.data) {
+        document.getElementById('saldoTotal').textContent = toFixedValue(response.data.saldoTotal);
+        document.getElementById('parcelado').textContent = toFixedValue(response.data.totalParcelado);
+        document.getElementById('saldoRestante').textContent = toFixedValue(response.data.saldoRestante);
+        document.getElementById('negativo').textContent = toFixedValue(response.data.saldoNegativo);
+        document.getElementById('totalPix').textContent = toFixedValue(response.data.totalPagoPix);
+        document.getElementById('username').textContent = response.data.username;  // Exibe o nome do usuário
+    } else {
+        alert('⚠️ Dados inválidos recebidos da API.');
+    }
+})
+.catch(error => {
+    console.error('❌ Erro ao carregar dados do dashboard:', error);
+    if (error.response && error.response.status === 401) {
+        window.location.href = 'index.html';  // Redireciona se não autorizado
+    }
+});
+carregarProdutos(); // Carregar todos os produtos ao iniciar
+}
+});
+</script>
 </body>
 </html>
